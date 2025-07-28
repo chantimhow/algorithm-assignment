@@ -17,7 +17,7 @@ using namespace std;
 bool ReadFile(string filename, List* list);
 bool DeleteRecord(List* list, char* id);
 //bool Display(List, int, int);
-//bool InsertBook(string, List *);
+bool InsertBook(string, List *);
 bool SearchStudent(List* list, char* id, LibStudent& studentinfo);
 //bool computeAndDisplayStatistics(List *);
 //bool printStuWithSameBook(List *, char *);
@@ -136,6 +136,14 @@ bool SearchStudent(List* list, char* id, LibStudent &studentinfo) {
 	}
 	return false;
 
+}
+bool InsertBook(string filename, List* list) {
+	ifstream infile;
+	infile.open(filename);
+	if (!infile.is_open()) return false;
+	while(   )
+
+	
 }
 
 		
