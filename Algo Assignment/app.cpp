@@ -3,10 +3,11 @@
 #include	<cstdlib>
 #include	<cstdio>
 #include    <fstream>
-#include    <string>
+#include    <string.h>
 #include	"List.h"
 #include    "LibStudent.h"
 #include    "LibBook.h"
+#include	<string>
 
 
 
