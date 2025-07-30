@@ -1,4 +1,4 @@
-Student Id = 120023311
+Student Id = 1200233
 Name = Matt Damon
 course = CS
 Phone Number = 790-3233

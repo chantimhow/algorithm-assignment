@@ -17,7 +17,7 @@ using namespace std;
 bool ReadFile(string filename, List* list);
 bool DeleteRecord(List* list, char* id);
 //bool Display(List, int, int);
-bool InsertBook(string, List *);
+bool InsertBook(string filename, List* list);
 bool SearchStudent(List* list, char* id, LibStudent& studentinfo);
 //bool computeAndDisplayStatistics(List *);
 //bool printStuWithSameBook(List *, char *);
@@ -33,21 +33,23 @@ int main() {
 	LibStudent currstudent;
 	//return 0;
 	List* libdata = new List();
-	if (ReadFile("student.txt", libdata)) cout << "read successful!\n";
-	else cout << "unable to read!";
-	for (int i = 1; i <=  libdata->count; i++) cout << libdata->find(i)->item.name << endl;
-	
-	int* x = new int;
-	char* userinput = new char[20];
-	strcpy(userinput, "120023311");
-	char* userinput1 = new char[20];
-	strcpy(userinput1, "1201237");
-	if (DeleteRecord(libdata, userinput)) cout << "deleted successfull!\n";
-	else cout << "delete unsucessfull!\n";
-	for (int i = 1; i <= libdata->count; i++) cout << libdata->find(i)->item.name << endl;
-	if (SearchStudent(libdata, userinput1, currstudent)) cout << "student found\n";
-	else cout << "student not found\n";
-	cout << currstudent.name;
+	string filename = "book.txt";
+		/*if (ReadFile("student.txt", libdata)) cout << "read successful!\n";
+		else cout << "unable to read!";
+		for (int i = 1; i <=  libdata->count; i++) cout << libdata->find(i)->item.name << endl;
+
+		int* x = new int;
+		char* userinput = new char[20];
+		strcpy(userinput, "120023311");
+		char* userinput1 = new char[20];
+		strcpy(userinput1, "1201237");
+		if (DeleteRecord(libdata, userinput)) cout << "deleted successfull!\n";
+		else cout << "delete unsucessfull!\n";
+		for (int i = 1; i <= libdata->count; i++) cout << libdata->find(i)->item.name << endl;
+		if (SearchStudent(libdata, userinput1, currstudent)) cout << "student found\n";
+		else cout << "student not found\n";
+		cout << currstudent.name;*/
+	InsertBook(filename,libdata);
 
 
 }
@@ -138,13 +140,50 @@ bool SearchStudent(List* list, char* id, LibStudent &studentinfo) {
 
 }
 bool InsertBook(string filename, List* list) {
+	int delicount = 0;
+	int index = 0;
 	ifstream infile;
 	infile.open(filename);
-	if (!infile.is_open()) return false;
-	while(   )
+	char tempostring[60];
+	while (infile >> tempostring) {//id
+		for (int i = 1; i < list->count; i++) {
+			if (list->find(i)->item.id == tempostring);
+			index = i;
+		}
+		infile >> tempostring;//author
+		for (char c : tempostring) {
+			if (c == '/') delicount++;
+		}
+		list->find(index)->item.book[list->find(index)->item.totalbook].author[0] = strtok(tempostring, "/");
+		for (int i = 1; i < delicount+1; i++) {
+			list->find(index)->item.book[list->find(index)->item.totalbook].author[i] = strtok(NULL, "/");
+		}
+		infile >> list->find(index)->item.book[list->find(index)->item.totalbook].title;
+		infile >> list->find(index)->item.book[list->find(index)->item.totalbook].publisher;
+		infile >> list->find(index)->item.book[list->find(index)->item.totalbook].ISBN;
+		infile >> list->find(index)->item.book[list->find(index)->item.totalbook].yearPublished;
+		infile >> list->find(index)->item.book[list->find(index)->item.totalbook].callNum;
+		infile >> tempostring;
+		list->find(index)->item.book[list->find(index)->item.totalbook].borrow.day = atoi(strtok(tempostring,"/"));
+		list->find(index)->item.book[list->find(index)->item.totalbook].borrow.month = atoi(strtok(NULL, "/"));
+		list->find(index)->item.book[list->find(index)->item.totalbook].borrow.year = atoi(strtok(NULL, "/"));
+		infile >> tempostring;
+		list->find(index)->item.book[list->find(index)->item.totalbook].due.day = atoi(strtok(tempostring, "/"));
+		list->find(index)->item.book[list->find(index)->item.totalbook].due.month = atoi(strtok(NULL, "/"));
+		list->find(index)->item.book[list->find(index)->item.totalbook].due.year = atoi(strtok(NULL, "/"));
+
+	}
+	
+
 
 	
+	
 }
+			
+		
+	
+	
+
 
 		
 		
