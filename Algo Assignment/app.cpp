@@ -35,7 +35,7 @@ int main() {
 	//return 0;
 	List* libdata = new List();
 	string filename = "book.txt";
-		/*if (ReadFile("student.txt", libdata)) cout << "read successful!\n";
+		if (ReadFile("student.txt", libdata)) cout << "read successful!\n";
 		else cout << "unable to read!";
 		for (int i = 1; i <=  libdata->count; i++) cout << libdata->find(i)->item.name << endl;
 
@@ -49,8 +49,8 @@ int main() {
 		for (int i = 1; i <= libdata->count; i++) cout << libdata->find(i)->item.name << endl;
 		if (SearchStudent(libdata, userinput1, currstudent)) cout << "student found\n";
 		else cout << "student not found\n";
-		cout << currstudent.name;*/
-	InsertBook(filename,libdata);
+		cout << currstudent.name;
+	/*InsertBook(filename,libdata);*/
 
 
 }
@@ -178,7 +178,7 @@ bool InsertBook(string filename, List* list) {
 
 
 	
-	
+	return true;
 }
 			
 		
