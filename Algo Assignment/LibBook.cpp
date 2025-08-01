@@ -1,22 +1,24 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <string>
 #include <iomanip>
 #include "LibBook.h"
 
 
+
 using namespace std;
 
 LibBook::LibBook()
 {
-	strcpy_s(title, " ");
-	strcpy_s(publisher, " ");
-	strcpy_s(ISBN, " ");
+	strcpy(title, " ");
+	strcpy(publisher, " ");
+	strcpy(ISBN, " ");
 	yearPublished = 0;
 
 	for (int i = 0; i < 10; i++)
 		author[i] = NULL;
 
-	strcpy_s(callNum, " ");
+	strcpy(callNum, " ");
 	fine = 0.0;
 }
 

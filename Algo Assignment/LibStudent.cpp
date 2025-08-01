@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <iomanip>
 #include "LibBook.h"
@@ -8,10 +9,10 @@ using namespace std;
 
 LibStudent::LibStudent()
 {
-	strcpy_s(name, " ");
-	strcpy_s(id, " ");
-	strcpy_s(course, " ");
-	strcpy_s(phone_no, " ");
+	strcpy(name, " ");
+	strcpy(id, " ");
+	strcpy(course, " ");
+	strcpy(phone_no, " ");
 	totalbook = 0;
 	total_fine = 0.0;
 }
