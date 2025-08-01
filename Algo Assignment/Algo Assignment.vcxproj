@@ -144,6 +144,7 @@
   <ItemGroup>
     <Text Include="book.txt" />
     <Text Include="student.txt" />
+    <Text Include="student1.txt" />
     <Text Include="student_booklist.txt" />
     <Text Include="student_info.txt" />
   </ItemGroup>
