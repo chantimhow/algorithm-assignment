@@ -35,7 +35,7 @@ int compareDate(Date date1, Date date2);
 
 
 
-;
+
 
 
 
@@ -55,7 +55,8 @@ int main() {
 		if (ReadFile("student.txt", libdata)) cout << "read successful!\n";
 		else cout << "unable to read!";
 	InsertBook("book.txt", libdata, currentdate);
-	Display(libdata, 1, 1);
+	Display(libdata, 2, 1);
+	cout << libdata->find(2)->item.name;
 		
 
 		
@@ -149,7 +150,7 @@ bool SearchStudent(List* list, char* id, LibStudent &studentinfo) {
 
 }
 bool InsertBook(string filename, List* list, Date currentdate) {
-	int delicount = 0;
+	
 	int index = 0;
 	ifstream infile;
 	infile.open(filename);
@@ -158,8 +159,9 @@ bool InsertBook(string filename, List* list, Date currentdate) {
 	while (infile >> tempostring) {//id
 		if (tempostring[0] == '\0') continue;
 		for (int i = 1; i <= list->count; i++) {
-			if (list->find(i)->item.id == tempostring) index = i;
+			if (strcmp(list->find(i)->item.id,tempostring)==0) index = i;
 		}
+		int delicount = 0;
 		infile >> tempostring;//author
 		for (char c : tempostring) {
 			if (c == '/') delicount++;

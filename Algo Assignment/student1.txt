@@ -12,7 +12,7 @@ BOOK LIST:
 Book 1
 
 Title: Advanced_topics_in_C:_Core_Concepts_in_Data_Structures
-Author: 0000021BAB232CC8
+Author: 000001BB360C2B58
 Publisher: Apress
 Year Published: 2013
 ISBN: 2361589071
@@ -25,7 +25,7 @@ Fine: 8.50
 Book 2
 
 Title: Starting_Out_with_Java:From_Control_Structures_Through_Data_Structures
-Author: 0000021BAB232E80
+Author: 000001BB360C2D10
 Publisher: Addison-Wesley
 Year Published: 2011
 ISBN: 0321545869
@@ -38,7 +38,7 @@ Fine: 0.00
 Book 3
 
 Title: Data_Structures_and_Other_Objects_Using_C++
-Author: 0000021BAB233038
+Author: 000001BB360C2EC8
 Publisher: Prentice_Hall
 Year Published: 2010
 ISBN: 0132129485
@@ -51,7 +51,7 @@ Fine: 1.00
 Book 4
 
 Title: Object-Oriented_Data_Structures_Using_Java
-Author: 0000021BAB2331F0
+Author: 000001BB360C3080
 Publisher: Jones_&_Bartlett_Learning
 Year Published: 2011
 ISBN: 1449613543
@@ -64,7 +64,7 @@ Fine: 19.00
 Book 5
 
 Title: Data_Structures_and_Other_Objects_Using_C++
-Author: 0000021BAB2333A8
+Author: 000001BB360C3238
 Publisher: Prentice_Hall
 Year Published: 2010
 ISBN: 0132129485
@@ -77,7 +77,7 @@ Fine: 0.00
 Book 6
 
 Title: Data_Structures_and_Other_Objects_Using_C++
-Author: 0000021BAB233560
+Author: 000001BB360C33F0
 Publisher: Prentice_Hall
 Year Published: 2010
 ISBN: 0132129485
@@ -90,7 +90,7 @@ Fine: 0.00
 Book 7
 
 Title: Advanced_topics_in_C:_Core_Concepts_in_Data_Structures
-Author: 0000021BAB233718
+Author: 000001BB360C35A8
 Publisher: Apress
 Year Published: 2013
 ISBN: 2361589071
@@ -103,7 +103,7 @@ Fine: 0.00
 Book 8
 
 Title: Starting_Out_with_Java:From_Control_Structures_Through_Data_Structures
-Author: 0000021BAB2338D0
+Author: 000001BB360C3760
 Publisher: Addison-Wesley
 Year Published: 2011
 ISBN: 0321545869
@@ -116,7 +116,7 @@ Fine: 6.00
 Book 9
 
 Title: Advanced_topics_in_C:_Core_Concepts_in_Data_Structures
-Author: 0000021BAB233A88
+Author: 000001BB360C3918
 Publisher: Apress
 Year Published: 2013
 ISBN: 2361589071
@@ -129,7 +129,7 @@ Fine: 0.00
 Book 10
 
 Title: Advanced_topics_in_C:_Core_Concepts_in_Data_Structures
-Author: 0000021BAB233C40
+Author: 000001BB360C3AD0
 Publisher: Apress
 Year Published: 2013
 ISBN: 2361589071
@@ -142,7 +142,7 @@ Fine: 0.50
 Book 11
 
 Title: Object-Oriented_Data_Structures_Using_Java
-Author: 0000021BAB233DF8
+Author: 000001BB360C3C88
 Publisher: Jones_&_Bartlett_Learning
 Year Published: 2011
 ISBN: 1449613543
@@ -155,7 +155,7 @@ Fine: 10.00
 Book 12
 
 Title: Data_Structures_and_Other_Objects_Using_C++
-Author: 0000021BAB233FB0
+Author: 000001BB360C3E40
 Publisher: Prentice_Hall
 Year Published: 2010
 ISBN: 0132129485
@@ -168,7 +168,7 @@ Fine: 0.00
 Book 13
 
 Title: Data_Structures_and_Other_Objects_Using_C++
-Author: 0000021BAB234168
+Author: 000001BB360C3FF8
 Publisher: Prentice_Hall
 Year Published: 2010
 ISBN: 0132129485
