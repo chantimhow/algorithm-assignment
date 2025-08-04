@@ -23,7 +23,7 @@ bool DeleteRecord(List* list, char* id);
 bool Display(List* list, int source, int detail);
 bool InsertBook(string filename, List* list, Date currentdate);
 bool SearchStudent(List* list, char* id, LibStudent& studentinfo);
-//bool computeAndDisplayStatistics(List *);
+bool computeAndDisplayStatistics(List *);
 //bool printStuWithSameBook(List *, char *);
 //bool displayWarnedStudent(List *, List *, List *);
 //int menu();
@@ -82,22 +82,22 @@ bool ReadFile(string filename, List* list) {
 	while (getline(infile, tempostring)) {
 		if (tempostring.find("Student Id") != string::npos) {
 			pos = tempostring.find('=');
-			strcpy_s(studentinfo.id, tempostring.substr(pos + 2).c_str());
+			strcpy(studentinfo.id, tempostring.substr(pos + 2).c_str());
 			linepos++;
 		}
 		else if (tempostring.find("Name") != string::npos) {
 			pos = tempostring.find('=');
-			strcpy_s(studentinfo.name, tempostring.substr(pos + 2).c_str());
+			strcpy(studentinfo.name, tempostring.substr(pos + 2).c_str());
 			linepos++;
 		}
 		else if (tempostring.find("course") != string::npos) {
 			pos = tempostring.find('=');
-			strcpy_s(studentinfo.course, tempostring.substr(pos + 2).c_str());
+			strcpy(studentinfo.course, tempostring.substr(pos + 2).c_str());
 			linepos++;
 		}
 		else if (tempostring.find("Phone Number") != string::npos) {
 			pos = tempostring.find('=');
-			strcpy_s(studentinfo.phone_no, tempostring.substr(pos + 2).c_str());
+			strcpy(studentinfo.phone_no, tempostring.substr(pos + 2).c_str());
 			linepos++;
 		}
 		if (linepos!= 0&& linepos % 4 == 0) {
@@ -311,6 +311,46 @@ bool Display(List* list, int source, int detail) {
 			break;
 		}
 		break;
+	}
+	return true;
+}
+bool computeAndDisplayStatistics(List  *list){
+	int studentcount;
+	int totalbookdue;
+	int totalfine;
+	int totalbooks;
+	cout << "Course" << left << setw(20) << setfill((' '));
+	cout << "Number of Students" << left << setw(30) << setfill((' '));
+	cout << "Total Borrowed Books" << left << setw(30) << setfill((' '));
+	cout << "Total Overdue Books" << left << setw(30) << setfill((' '));
+	cout << "Total Overdue Fine (RM)" << left << setw(30) << setfill((' ')) << endl;
+	for(int i =1;i<=list->count;i++){
+		studentcount = 0;
+		totalbookdue = 0;
+		totalfine = 0;
+		totalbooks = 0;
+		if(strcmp(list->find(i)->item.course,"CS")==0){
+			studentcount++;
+			totalbooks += list->find(i)->item.totalbook;
+			totalfine += list->find(i)->item.total_fine;
+			for(int j = 0;j<list->find(i)->item.totalbook;j++){
+			if(list->find(i)->item.book[j].fine>0) totalbookdue++;}
+		}
+		cout << "CS" << left << setw(20) << setfill((' '));
+		cout << studentcount << left << setw(20) << setfill((' '));
+		cout << totalbooks << left << setw(20) << setfill((' '));
+		cout << totalbookdue << left << setw(20) << setfill((' '));
+		cout << totalfine << left << setw(20) << setfill((' '));
+
+	}
+			
+
+				
+			
+
+
+
+		}
 	}
 }
 
