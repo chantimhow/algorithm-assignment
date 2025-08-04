@@ -1,15 +1,18 @@
-#define		_CRT_SECURE_NO_WARNINGS
+﻿#define		_CRT_SECURE_NO_WARNINGS
 #include	<iostream>
 #include	<cstdlib>
 #include	<cstdio>
 #include    <fstream>
 #include    <string.h>
-#include	"List.h"
-#include    "LibStudent.h"
-#include    "LibBook.h"
 #include	<string>
 #include	<ctime>
 #include	<iomanip>
+#include	"List.h"
+#include    "LibStudent.h"
+#include    "LibBook.h"
+
+  
+
 
 
 
@@ -21,11 +24,11 @@ using namespace std;
 bool ReadFile(string filename, List* list);
 bool DeleteRecord(List* list, char* id);
 bool Display(List* list, int source, int detail);
-bool InsertBook(string filename, List* list, Date currentdate);
+bool InsertBook(string filename, List* list, Date &currentdate);
 bool SearchStudent(List* list, char* id, LibStudent& studentinfo);
 bool computeAndDisplayStatistics(List *);
-//bool printStuWithSameBook(List *, char *);
-//bool displayWarnedStudent(List *, List *, List *);
+bool printStuWithSameBook(List *, char *);
+bool displayWarnedStudent(List *, List *, List *,Date);
 //int menu();
 time_t convertDate(Date time);
 int compareDate(Date date1, Date date2);
@@ -48,15 +51,32 @@ int main() {
 	cout << "test";
 	cout << "\n\n";
 	system("pause");
-	LibStudent currstudent;
+	
 	//return 0;
 	List* libdata = new List();
+	List* type1 = new List();
+	List* type2 = new List();
+
 	string filename = "book.txt";
 		if (ReadFile("student.txt", libdata)) cout << "read successful!\n";
 		else cout << "unable to read!";
 	InsertBook("book.txt", libdata, currentdate);
-	Display(libdata, 2, 1);
-	cout << libdata->find(2)->item.name;
+	cout << endl << endl;
+	for (int i = 1; i <= libdata->count; i++) {
+		libdata->find(i)->item.print(cout);
+	}
+	computeAndDisplayStatistics(libdata);
+	
+	//for (int i = 1; i < libdata->count; i++){
+	//	if (strcmp(libdata->find(i)->item.id, "1201237") == 0) {
+	//		for (int j = 0; j < libdata->find(i)->item.totalbook; j++) {
+	//			cout << libdata->find(i)->item.book[j].fine << endl;
+	//		}
+	//	}
+	//}
+	char callid[50] = "QA76.73.C15K35";
+	printStuWithSameBook(libdata, callid);
+	displayWarnedStudent(libdata, type1, type2, currentdate);
 		
 
 		
@@ -102,23 +122,16 @@ bool ReadFile(string filename, List* list) {
 		}
 		if (linepos!= 0&& linepos % 4 == 0) {
 			exist = false;
-			if (list->empty()) {
-				list->insert(studentinfo);
-				linepos = 0;
-
-			}
-			else {
 				for (int i=1; i <= list->count; i++) {
-					if (list->find(i)->item.id == studentinfo.id) {
+					if (strcmp(list->find(i)->item.id,studentinfo.id)==0) {
 						exist = true;
 						break;
 					}
 				}
 				if (!exist) {
 					list->insert(studentinfo);
-					linepos = 0;
 				}
-			}
+			
 
 		}
 	}
@@ -149,9 +162,9 @@ bool SearchStudent(List* list, char* id, LibStudent &studentinfo) {
 	return false;
 
 }
-bool InsertBook(string filename, List* list, Date currentdate) {
+bool InsertBook(string filename, List* list, Date &currentdate) {
 	
-	int index = 0;
+	
 	ifstream infile;
 	infile.open(filename);
 	if (!infile.is_open()) return false;
@@ -159,33 +172,35 @@ bool InsertBook(string filename, List* list, Date currentdate) {
 	while (infile >> tempostring) {//id
 		if (tempostring[0] == '\0') continue;
 		for (int i = 1; i <= list->count; i++) {
-			if (strcmp(list->find(i)->item.id,tempostring)==0) index = i;
+			if (strcmp(list->find(i)->item.id, tempostring) == 0) {
+
+				int delicount = 0;
+				infile >> tempostring;//author
+				for (char c : tempostring) {
+					if (c == '/') delicount++;
+				}
+				list->find(i)->item.book[list->find(i)->item.totalbook].author[0] = strtok(tempostring, "/");
+				for (int j = 1; j < delicount + 1; j++) {
+					list->find(i)->item.book[list->find(i)->item.totalbook].author[j] = strtok(NULL, "/");
+				}
+				infile >> list->find(i)->item.book[list->find(i)->item.totalbook].title;
+				infile >> list->find(i)->item.book[list->find(i)->item.totalbook].publisher;
+				infile >> list->find(i)->item.book[list->find(i)->item.totalbook].ISBN;
+				infile >> list->find(i)->item.book[list->find(i)->item.totalbook].yearPublished;
+				infile >> list->find(i)->item.book[list->find(i)->item.totalbook].callNum;
+				infile >> tempostring;
+				list->find(i)->item.book[list->find(i)->item.totalbook].borrow.day = atoi(strtok(tempostring, "/"));
+				list->find(i)->item.book[list->find(i)->item.totalbook].borrow.month = atoi(strtok(NULL, "/"));
+				list->find(i)->item.book[list->find(i)->item.totalbook].borrow.year = atoi(strtok(NULL, "/"));
+				infile >> tempostring;
+				list->find(i)->item.book[list->find(i)->item.totalbook].due.day = atoi(strtok(tempostring, "/"));
+				list->find(i)->item.book[list->find(i)->item.totalbook].due.month = atoi(strtok(NULL, "/"));
+				list->find(i)->item.book[list->find(i)->item.totalbook].due.year = atoi(strtok(NULL, "/"));
+				list->find(i)->item.book[list->find(i)->item.totalbook].fine = (compareDate(currentdate, list->find(i)->item.book[list->find(i)->item.totalbook].due)) * 0.5;
+				++list->find(i)->item.totalbook;
+				list->find(i)->item.calculateTotalFine();
+			}
 		}
-		int delicount = 0;
-		infile >> tempostring;//author
-		for (char c : tempostring) {
-			if (c == '/') delicount++;
-		}
-		list->find(index)->item.book[list->find(index)->item.totalbook].author[0] = strtok(tempostring, "/");
-		for (int i = 1; i < delicount+1; i++) {
-			list->find(index)->item.book[list->find(index)->item.totalbook].author[i] = strtok(NULL, "/");
-		}
-		infile >> list->find(index)->item.book[list->find(index)->item.totalbook].title;
-		infile >> list->find(index)->item.book[list->find(index)->item.totalbook].publisher;
-		infile >> list->find(index)->item.book[list->find(index)->item.totalbook].ISBN;
-		infile >> list->find(index)->item.book[list->find(index)->item.totalbook].yearPublished;
-		infile >> list->find(index)->item.book[list->find(index)->item.totalbook].callNum;
-		infile >> tempostring;
-		list->find(index)->item.book[list->find(index)->item.totalbook].borrow.day = atoi(strtok(tempostring,"/"));
-		list->find(index)->item.book[list->find(index)->item.totalbook].borrow.month = atoi(strtok(NULL, "/"));
-		list->find(index)->item.book[list->find(index)->item.totalbook].borrow.year = atoi(strtok(NULL, "/"));
-		infile >> tempostring;
-		list->find(index)->item.book[list->find(index)->item.totalbook].due.day = atoi(strtok(tempostring, "/"));
-		list->find(index)->item.book[list->find(index)->item.totalbook].due.month = atoi(strtok(NULL, "/"));
-		list->find(index)->item.book[list->find(index)->item.totalbook].due.year = atoi(strtok(NULL, "/"));
-		list->find(index)->item.book[list->find(index)->item.totalbook].fine = (compareDate(currentdate, list->find(index)->item.book[list->find(index)->item.totalbook].due))*0.5;
-		list->find(index)->item.totalbook++;
-		list->find(index)->item.calculateTotalFine();
 		
 
 	}
@@ -206,12 +221,12 @@ time_t convertDate(Date time) {
 	return mktime(&tm_time);
 
 }
-int compareDate(Date date1, Date date2) {
-	time_t currentdate = convertDate(date1);
-	time_t duedate = convertDate(date2);
-	if (currentdate < duedate) return 0;
+int compareDate(Date currentdate, Date duedate) {
+	time_t date1 = convertDate(currentdate);
+	time_t date2 = convertDate(duedate);
+	if (date1 <= date2) return 0;
 	
-	double diff = difftime(currentdate, duedate);
+	double diff = difftime(date1, date2);
 	return diff /(60 * 60 * 24);
 
 }
@@ -314,45 +329,135 @@ bool Display(List* list, int source, int detail) {
 	}
 	return true;
 }
-bool computeAndDisplayStatistics(List  *list){
-	int studentcount;
-	int totalbookdue;
-	int totalfine;
-	int totalbooks;
-	cout << "Course" << left << setw(20) << setfill((' '));
-	cout << "Number of Students" << left << setw(30) << setfill((' '));
-	cout << "Total Borrowed Books" << left << setw(30) << setfill((' '));
-	cout << "Total Overdue Books" << left << setw(30) << setfill((' '));
-	cout << "Total Overdue Fine (RM)" << left << setw(30) << setfill((' ')) << endl;
-	for(int i =1;i<=list->count;i++){
-		studentcount = 0;
-		totalbookdue = 0;
-		totalfine = 0;
-		totalbooks = 0;
-		if(strcmp(list->find(i)->item.course,"CS")==0){
-			studentcount++;
-			totalbooks += list->find(i)->item.totalbook;
-			totalfine += list->find(i)->item.total_fine;
-			for(int j = 0;j<list->find(i)->item.totalbook;j++){
-			if(list->find(i)->item.book[j].fine>0) totalbookdue++;}
-		}
-		cout << "CS" << left << setw(20) << setfill((' '));
-		cout << studentcount << left << setw(20) << setfill((' '));
-		cout << totalbooks << left << setw(20) << setfill((' '));
-		cout << totalbookdue << left << setw(20) << setfill((' '));
-		cout << totalfine << left << setw(20) << setfill((' '));
+bool computeAndDisplayStatistics(List* list) {
+	if (list == NULL) return false;
+	cout << setw(10) << setfill(' ') << left << "Course";
+	cout << setw(25) << setfill(' ') << left << "Number of Students";
+	cout << setw(25) << setfill(' ') << left << "Total Borrowed Books";
+	cout << setw(25) << setfill(' ') << left << "Total Overdue Books";
+	cout << setw(25) << setfill(' ') << left << "Total Overdue Fine (RM)" << endl;
+	
 
+	auto print = [&list](const char *courseID) {
+		int studentcount = 0;
+		int totalbookdue = 0;
+		double totalfine = 0;
+		int totalbooks = 0;
+		for (int i = 1; i <= list->count; i++) {
+			if (strcmp(list->find(i)->item.course, courseID) == 0)
+			{
+				++studentcount;
+				totalbooks += list->find(i)->item.totalbook;
+				totalfine += list->find(i)->item.total_fine;
+				for (int j = 0; j < list->find(i)->item.totalbook; j++) {
+					if (list->find(i)->item.book[j].fine > 0) ++totalbookdue;
+				}
+			}
+		}
+		cout << setw(10) << setfill(' ') << left << courseID;
+		cout << setw(25) << setfill(' ') << left << studentcount;
+		cout << setw(25) << setfill(' ') << left << totalbooks;
+		cout << setw(25) << setfill(' ') << left << totalbookdue;
+		cout << setw(25) << setfill(' ') << left  << fixed << showpoint << setprecision(2) << totalfine << endl;
+		};
+	print("CS");
+	print("IA");
+	print("IB");
+	print("CN");
+	print("CT");
+	return true;
+}	
+
+bool printStuWithSameBook(List *list, char* booknumber) {
+	if (list == NULL) return false;
+	int count = 0;
+	for (int i = 1; i <= list->count; i++) {
+		for (int j = 0; j < list->find(i)->item.totalbook; j++) {
+			if (strcmp(list->find(i)->item.book[j].callNum,booknumber)==0) {
+				count++;
+				break;
+			}
+		}
 	}
+	cout << "There are " << count << " students that borrow the book with call number " << booknumber << " as shown below:";
+	for (int i = 1; i <= list->count; i++) {
+
+		for (int j = 0; j < list->find(i)->item.totalbook; j++) {
+			if (strcmp(list->find(i)->item.book[j].callNum, booknumber) == 0) {
+				list->find(i)->item.print(cout);
+				break;
+			}
+		}
+	}
+	return true;
+}
+bool displayWarnedStudent(List*list, List* type1, List* type2,Date currentdate) {
+	if (list == NULL) return false;
+	for (int i = 1; i < list->count; i++) {
+		int duebookcount = 0;
+		bool exist1 = false;
+		bool exist2 = false;
+		bool allbooksdue=true;
+		for (int j = 0; j < list->find(i)->item.totalbook; j++) {
+			if (list->find(i)->item.book[j].fine >= 5) {
+				duebookcount++;
+			}
+			if (list->find(i)->item.book[j].fine == 0) {
+				allbooksdue = false;
+				
+			}
+
+		}
+			if (duebookcount > 2) {//type 1 typa student
+				for (int v = 1; v <= type1->count; v++) {
+					if (type1->find(v)->item.compareName2(list->find(i)->item)) {
+						exist1 = true;
+						break;
+					}
+				}
+				if (!exist1) {
+					type1->insert(list->find(i)->item);
+				}
+			}
+			if (allbooksdue && list->find(i)->item.total_fine > 50) {
+				for (int v = 1; v <= type2->count; v++) {
+					if (type2->find(v)->item.compareName2(list->find(i)->item)) {
+						exist2 = true;
+						break;
+					}
+				}
+				if (!exist2) {
+					type2->insert(list->find(i)->item);
+				}
+				
+			}
 			
+		
+	}
+	cout << "students with 2 books that are overdue and more than 10 days\n";
+	for (int i = 1; i <= type1->count; i++) {
+		type1->find(i)->item.print(cout);
+		for (int j = 0; j < type1->find(i)->item.totalbook; j++) {
+			type1->find(i)->item.book[j].print(cout);
+		}
+	}
+	cout << "student with fine of more than RM50.00 and all books are over due\n";
+	for (int i = 1; i <= type2->count; i++) {
+		type2->find(i)->item.print(cout);
+		for (int j = 0; j < type2->find(i)->item.totalbook; j++) {
+			type2->find(i)->item.book[j].print(cout);
+		}
+	}
+	return true;
+}
+
+
 
 				
 			
 
 
 
-		}
-	}
-}
 
 		
 	
