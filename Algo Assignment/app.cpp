@@ -77,6 +77,7 @@ int main() {
 	char callid[50] = "QA76.73.C15K35";
 	printStuWithSameBook(libdata, callid);
 	displayWarnedStudent(libdata, type1, type2, currentdate);
+	cout << libdata->find(1)->item.book[0].author[0];
 		
 
 		
