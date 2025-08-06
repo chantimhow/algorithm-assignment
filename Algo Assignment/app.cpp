@@ -29,7 +29,7 @@ bool SearchStudent(List* list, char* id, LibStudent& studentinfo);
 bool computeAndDisplayStatistics(List *);
 bool printStuWithSameBook(List *, char *);
 bool displayWarnedStudent(List *, List *, List *,Date);
-//int menu();
+int menu();
 time_t convertDate(Date time);
 int compareDate(Date date1, Date date2);
 
@@ -456,6 +456,25 @@ bool displayWarnedStudent(List*list, List* type1, List* type2,Date currentdate) 
 	return true;
 }
 
+int menu(){
+	int userinput;
+	cout << "1.Read File\n";
+	cout << "2.Delete Record\n";
+	cout << "3.Search Student\n";
+	cout << "4.Insert Book\n";
+	cout << "5.Display Output\n";
+	cout << "6.Compute and Display Statistics\n";
+	cout << "7.Student with Same Book\n";
+	cout << "8.Display Warned Student\n";
+	cout << "9.Exit\n";
+	do{ 
+		cin >> userinput;
+		if (userinput <= 0 || userinput > 9) cout << "please only enter a value between 1 and 9!";
+	}while (userinput <= 0 || userinput > 9);
+	return userinput; 
+
+	
+}
 
 
 				
