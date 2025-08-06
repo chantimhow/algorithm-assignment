@@ -171,14 +171,18 @@ bool InsertBook(string filename, List* list, Date &currentdate) {
 	if (!infile.is_open()) return false;
 	char tempostring[60];
 	char* token;
+
+	
 	while (infile >> tempostring) {//id
 		if (tempostring[0] == '\0') continue;
 		for (int i = 1; i <= list->count; i++) {
 			if (strcmp(list->find(i)->item.id, tempostring) == 0) {
 				infile >> tempostring;
-				token = strtok(tempostring, "/");
+				token=strtok(tempostring, "/");
+				cout <<   token;
 				for (int c = 0; token != NULL; c++) {
-					list->find(i)->item.book[list->find(i)->item.totalbook].author[c] = token;
+					list->find(i)->item.book[list->find(i)->item.totalbook].author[c] = new char[strlen(token) + 1];
+					strcpy(list->find(i)->item.book[list->find(i)->item.totalbook].author[c],token);
 					token = strtok(NULL, "/");
 					
 				}
