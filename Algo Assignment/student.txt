@@ -1,9 +1,3 @@
-Student Id = 1200233
-Name = Matt Damon
-course = CS
-Phone Number = 790-3233
-
-
 Student Id = 1201237
 Name = Ben Affleck
 course = IA
@@ -47,4 +41,20 @@ Student Id = 1234567
 Name = Jonk
 course = CS
 Phone Number = 790-3233
+Student Id = 1234567
+Name = Jonk
+course = CS
+Phone Number = 790-3233
+Student Id = 123456732323
+Name = Jonk
+course = CS
+Phone Number = 790-3233
 
+dw
+dadwa
+da
+dad
+ad
+ada
+d
+a
