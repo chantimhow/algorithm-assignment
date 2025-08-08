@@ -1,0 +1,140 @@
+
+STUDENT1
+
+
+Name: Audrey Chan
+Id: 1310983
+Course: IA
+Phone No: 521-3879
+Total Fine: RM0.00
+BOOK LIST: 
+
+STUDENT2
+
+
+Name: Ben Affleck
+Id: 1201237
+Course: IA
+Phone No: 432-4579
+Total Fine: RM3844.00
+BOOK LIST: 
+
+Title: Advanced_topics_in_C:_Core_Concepts_in_Data_Structures
+Author: Noel_Kalicharan	
+Publisher: Apress
+Year Published: 2013
+ISBN: 2361589071
+Call Number: QA76.73.C15K35
+Borrow Date: 12/2/2020
+Due Date: 12/3/2019
+Fine: RM191.50
+
+Title: Starting_Out_with_Java:From_Control_Structures_Through_Data_Structures
+Author: Tony_Gaddis	Godfrey_Muganda	
+Publisher: Addison-Wesley
+Year Published: 2011
+ISBN: 0321545869
+Call Number: QA76.73.C153S26
+Borrow Date: 30/2/2020
+Due Date: 29/3/2020
+Fine: RM0.00
+
+Title: Data_Structures_and_Other_Objects_Using_C++
+Author: Micheal_Main	Walter_Savitch	Chip_Weems	
+Publisher: Prentice_Hall
+Year Published: 2010
+ISBN: 0132129485
+Call Number: QA76.73.C153N861
+Borrow Date: 29/2/2020
+Due Date: 29/3/2000
+Fine: RM3652.50
+
+STUDENT3
+
+
+Name: Ben Ma
+Id: 1603679
+Course: IB
+Phone No: 693-2367
+Total Fine: RM0.00
+BOOK LIST: 
+
+STUDENT4
+
+
+Name: Chan Tim How
+Id: 6969699
+Course: CS
+Phone No: 790-3233
+Total Fine: RM0.00
+BOOK LIST: 
+
+STUDENT5
+
+
+Name: Jonk
+Id: 1234567
+Course: CS
+Phone No: 790-3233
+Total Fine: RM0.00
+BOOK LIST: 
+
+STUDENT6
+
+
+Name: Ken Wong
+Id: 1502378
+Course: CS
+Phone No: 892-3765
+Total Fine: RM0.00
+BOOK LIST: 
+
+STUDENT7
+
+
+Name: Matt Damon
+Id: 1200233
+Course: CS
+Phone No: 790-3233
+Total Fine: RM210.50
+BOOK LIST: 
+
+Title: Advanced_topics_in_C:_Core_Concepts_in_Data_Structures
+Author: Noel_Kalicharan	
+Publisher: Apress
+Year Published: 2013
+ISBN: 2361589071
+Call Number: QA76.73.C15K35
+Borrow Date: 12/2/2020
+Due Date: 12/3/2019
+Fine: RM191.50
+
+Title: Object-Oriented_Data_Structures_Using_Java
+Author: Nell_Dale	Daniel_Joyce	Chip_Weems	
+Publisher: Jones_&_Bartlett_Learning
+Year Published: 2011
+ISBN: 1449613543
+Call Number: QA76.58.M532
+Borrow Date: 20/1/2020
+Due Date: 20/2/2020
+Fine: RM19.00
+
+STUDENT8
+
+
+Name: Salma Hayek
+Id: 1300899
+Course: IB
+Phone No: 790-0000
+Total Fine: RM1.00
+BOOK LIST: 
+
+Title: Data_Structures_and_Other_Objects_Using_C++
+Author: Micheal_Main	Walter_Savitch	
+Publisher: Prentice_Hall
+Year Published: 2010
+ISBN: 0132129485
+Call Number: QA76.73.C153N868
+Borrow Date: 27/2/2020
+Due Date: 27/3/2020
+Fine: RM1.00

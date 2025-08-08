@@ -51,7 +51,6 @@ int main() {
 
 	Date currentdate;
 	currentdate.day = 29; currentdate.month = 3; currentdate.year = 2020;
-	//return 0;
 	LibStudent student;
 	List* libdata = new List();
 	List* type1 = new List();
@@ -61,16 +60,15 @@ int main() {
 	char idfind[8];
 	char* callnum;
 
-
-
 	cout << "Welcome to UTAR Library portal!\n";
 		
 	do {
+		cout << endl;
 		system("pause");
 		CLEAR_SCREEN;
 		int choice = menu();
 		CLEAR_SCREEN;
-		switch (choice) {
+		switch (choice) { //switch case for choice
 		case 1:
 			if (ReadFile(studentfile, libdata)) cout << "read successful\n";
 			else cout << "read unsuccessful\n";
@@ -82,7 +80,7 @@ int main() {
 			cin >> temp;
 			if (strlen(temp.c_str()) > 7) {
 				do {
-					cout << "student letter consist of 7 digits!\n";
+					cout << "student letter consist of 7 digits!\n"; // to make sure that the id inserted is more than 7 digits
 					cin >> temp;
 				} while (strlen(temp.c_str()) > 7);
 			}
@@ -97,7 +95,7 @@ int main() {
 			cin >> temp;
 			if (strlen(temp.c_str()) > 7) {
 				do {
-					cout << "student letter consist of 7 digits!\n";
+					cout << "student letter consist of 7 digits!\n"; 
 					cin >> temp;
 				} while (strlen(temp.c_str()) > 7);
 			}
@@ -153,6 +151,7 @@ int main() {
 			return 0;
 		}
 	} while (1);
+	return 0;
 }
 
 
@@ -169,9 +168,9 @@ bool ReadFile(string filename, List* list) {
 	if (!infile.is_open()) return false;
 		
 	while (getline(infile, tempostring)) {
-		if (tempostring.find("Student Id") != string::npos) {
-			pos = tempostring.find('=');
-			if (strlen(tempostring.substr(pos + 2).c_str()) < 10) {
+		if (tempostring.find("Student Id") != string::npos) { // to find the identifiers and taking the value after identifier.
+			pos = tempostring.find('='); 
+			if (strlen(tempostring.substr(pos + 2).c_str()) < 10) { // pos + 2 as the value always starts two position after =, < 10 to prevent overflowing when strpying into studentinfo.id
 				strcpy(studentinfo.id, tempostring.substr(pos + 2).c_str());
 				linepos++;
 			}
@@ -197,11 +196,11 @@ bool ReadFile(string filename, List* list) {
 				linepos++;
 			}
 		}
-		if (linepos!= 0&& linepos % 4 == 0) {
+		if (linepos!= 0&& linepos % 4 == 0) { // to make sure all neccesary values are stored before inserting into the list
 			exist = false;
 				for (int i=1; i <= list->count; i++) {
 					if (strcmp(list->find(i)->item.id,studentinfo.id)==0) {
-						cout << "duplicate record found for ID (" << studentinfo.id <<") IGNORING RECORD...\n";
+						cout << "duplicate record found for ID (" << studentinfo.id <<") IGNORING RECORD...\n"; // to check whether the id already exist in the list.
 						exist = true;
 						break;
 					}
@@ -243,7 +242,7 @@ bool SearchStudent(List* list, char* id, LibStudent &studentinfo) {
 }
 bool InsertBook(string filename, List* list, Date &currentdate) {
 	if (list->empty()) return false;
-	LibBook tempobooks = LibBook();
+	LibBook tempobooks =  LibBook();
 	ifstream infile;
 	infile.open(filename);
 	if (!infile.is_open()) return false;
@@ -253,13 +252,13 @@ bool InsertBook(string filename, List* list, Date &currentdate) {
 
 	
 	while (infile >> tempostring) {//id
-		if (tempostring[0] == '\0') continue;
+		if (tempostring[0] == '\0') continue; // if tempostring is a empty skips everything and continue the loop
 		for (int i = 1; i <= list->count; i++) {
 			if (strcmp(list->find(i)->item.id, tempostring) == 0) {
 				infile >> tempostring;
-				token=strtok(tempostring, "/");
-				for (int c = 0; token != NULL; c++) {
-					tempobooks.author[c] = new char[strlen(token) + 1];
+				token=strtok(tempostring, "/"); // strtok to replace '/' in tempostring to null and token is pointing to the first letter of tempostring
+				for (int c = 0; token != NULL; c++) { //if token is null there is no more author in tempostring
+					tempobooks.author[c] = new char[strlen(token) + 1]; // allocating memory to tempobooks.author with the length of token plus 1 for \0
 					strcpy(tempobooks.author[c],token);
 					token = strtok(NULL, "/");
 				}
@@ -269,17 +268,17 @@ bool InsertBook(string filename, List* list, Date &currentdate) {
 				infile >> tempobooks.yearPublished;
 				infile >> tempobooks.callNum;
 				infile >> tempostring;
-				tempobooks.borrow.day = atoi(strtok(tempostring, "/"));
+				tempobooks.borrow.day = atoi(strtok(tempostring, "/")); // same technique as the author, atoi to convert the cstring into int to be stored into tempobooks.borrow.day
 				tempobooks.borrow.month = atoi(strtok(NULL, "/"));
 				tempobooks.borrow.year = atoi(strtok(NULL, "/"));
 				infile >> tempostring;
 				tempobooks.due.day = atoi(strtok(tempostring, "/"));
 				tempobooks.due.month = atoi(strtok(NULL, "/"));
 				tempobooks.due.year = atoi(strtok(NULL, "/"));
-				tempobooks.fine = (compareDate(currentdate, list->find(i)->item.book[list->find(i)->item.totalbook].due)) * 0.5;
+				tempobooks.fine = (compareDate(currentdate, tempobooks.due) * 0.5); // a function to compare two dates and return their differences * 0.5 as one day fine is rm0.50
 				for (int j = 0; j < list->find(i)->item.totalbook; j++) {
 					if (strcmp(list->find(i)->item.book[j].callNum, tempobooks.callNum) == 0) {
-						cout << "Duplicate records found for book with callnum (" << tempobooks.callNum << ") IGNORING RECORD... \n";
+						cout << "Duplicate records found for book with callnum (" << tempobooks.callNum << ") IGNORING RECORD... \n"; // to check for duplicate records in a student booklist by checking call numbers.
 						tempobooks = LibBook();
 						bookexist = true;
 						break;
@@ -303,6 +302,8 @@ bool InsertBook(string filename, List* list, Date &currentdate) {
 					list->find(i)->item.book[list->find(i)->item.totalbook].due.year=tempobooks.due.year;
 					list->find(i)->item.book[list->find(i)->item.totalbook].fine=tempobooks.fine;
 					++list->find(i)->item.totalbook;
+					list->find(i)->item.calculateTotalFine();
+					
 
 				}
 
@@ -314,7 +315,7 @@ bool InsertBook(string filename, List* list, Date &currentdate) {
 }
 
 
-time_t convertDate(Date time) {
+time_t convertDate(Date time) { // a time t function from the c_time library that converts time to a value that c_time understands.
 	struct tm tm_time;
 	tm_time.tm_year = time.year - 1900;
 	tm_time.tm_mon = time.month - 1;
@@ -327,13 +328,13 @@ time_t convertDate(Date time) {
 }
 
 
-int compareDate(Date currentdate, Date duedate) {
+int compareDate(Date currentdate, Date duedate) { // a function that uses the convert date function and comparing both converted time and returning their difference
 	time_t date1 = convertDate(currentdate);
 	time_t date2 = convertDate(duedate);
 	if (date1 <= date2) return 0;
 	
 	double diff = difftime(date1, date2);
-	return diff /(60 * 60 * 24);
+	return diff /(60 * 60 * 24); // 
 }
 
 
@@ -341,14 +342,14 @@ bool Display(List* list, int source, int detail) {
 	if (list->empty()) return false;
 	ofstream outfile;
 
-	switch (source) {
+	switch (source) { // a switch within a switch for source and detail
 	case 1:
 		switch (detail) {
 		case 1:
-			outfile.open("student1.txt");
+			outfile.open("student_bookinfo.txt");
 			if (!outfile.is_open()) return false;
 			for (int i = 1; i <= list->count; i++) {
-				outfile << "STUDENT" << i << endl;
+				outfile << endl << "STUDENT " << i << endl;
 				list->find(i)->item.print(outfile);
 				outfile << "BOOK LIST: \n";
 				for (int j = 0; j < list->find(i)->item.totalbook; j++) {
@@ -360,12 +361,12 @@ bool Display(List* list, int source, int detail) {
 
 					
 		case 2:
-			outfile.open("student1.txt"); 
+			outfile.open("student_info.txt"); 
 			if (!outfile.is_open()) return false;
 			
 			for (int i = 1; i <= list->count; i++) {
-				outfile << "STUDENT" << i << endl;
-				list->find(i)->item.print(cout);
+				outfile << endl << "STUDENT " << i << endl;
+				list->find(i)->item.print(outfile);
 			}
 			outfile.close();
 			break;
@@ -411,7 +412,7 @@ bool computeAndDisplayStatistics(List* list) {
 	cout << setw(25) << setfill(' ') << left << "Total Overdue Fine (RM)" << endl;
 	
 
-	auto print = [&list](const char *courseID) {
+	auto print = [&list](const char *courseID) { //lamba function to print to reduce redundancy 
 		int studentcount = 0;
 		int totalbookdue = 0;
 		double totalfine = 0;
@@ -454,12 +455,24 @@ bool printStuWithSameBook(List *list, char* booknumber) {
 		}
 	}
 
-	cout << "There are " << count << " students that borrow the book with call number " << booknumber << " as shown below:";
+	cout << "There are " << count << " students that borrow the book with call number " << booknumber << " as shown below:" << endl << endl;
 	for (int i = 1; i <= list->count; i++) {
 
 		for (int j = 0; j < list->find(i)->item.totalbook; j++) {
 			if (strcmp(list->find(i)->item.book[j].callNum, booknumber) == 0) {
-				list->find(i)->item.print(cout);
+				cout << setw(100) << setfill('-') << '-' << endl;
+				cout << "Student ID: " << list->find(i)->item.id<<endl;
+				cout << "Name: " << list->find(i)->item.name<<endl;
+				cout << "Course: " << list->find(i)->item.course<<endl;
+				cout << "Phone Number: " << list->find(i)->item.phone_no<<endl;
+				cout << "Borrow Date: "; 
+				list->find(i)->item.book[j].borrow.print(cout);
+				cout << endl << "Due Date: "; 
+				list->find(i)->item.book[j].due.print(cout);
+				cout << endl;
+				
+
+				
 				break;
 			}
 		}
@@ -474,12 +487,13 @@ bool displayWarnedStudent(List*list, List* type1, List* type2,Date currentdate) 
 		bool exist1 = false;
 		bool exist2 = false;
 		bool allbooksdue = true;
-		for (int j = 0; j < list->find(i)->item.totalbook; j++) {
+		for (int j = 0; j < list->find(i)->item.totalbook; j++) { //to check how many books a student have that is due
 			if (list->find(i)->item.book[j].fine >= 5) {
 				duebookcount++;
 			}
-			if (list->find(i)->item.book[j].fine == 0) {
+			if (list->find(i)->item.book[j].fine == 0) { // to check whether students books are all due
 				allbooksdue = false;
+				
 
 			}
 
@@ -508,7 +522,7 @@ bool displayWarnedStudent(List*list, List* type1, List* type2,Date currentdate) 
 
 		}
 	}
-			if (type1->empty() && type2->empty()) return false;
+			if (type1->empty() && type2->empty()) return false; 
 			if (!type1->empty()) {
 				cout << "students with 2 books that are overdue and more than 10 days\n";
 				for (int i = 1; i <= type1->count; i++) {
