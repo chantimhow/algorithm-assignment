@@ -3,7 +3,6 @@
 #include	<cstdlib>
 #include	<cstdio>
 #include    <fstream>
-#include    <string.h>
 #include	<string>
 #include	<ctime>
 #include	<iomanip>
@@ -60,7 +59,9 @@ int main() {
 	char idfind[8];
 	char* callnum;
 
-	cout << "Welcome to UTAR Library portal!\n";
+	cout << "=======================================\n";
+	cout << "    Welcome to UTAR Library portal!\n";
+	cout << "=======================================\n";
 		
 	do {
 		cout << endl;
@@ -70,24 +71,34 @@ int main() {
 		CLEAR_SCREEN;
 		switch (choice) { //switch case for choice
 		case 1:
-			if (ReadFile(studentfile, libdata)) cout << "read successful\n";
-			else cout << "read unsuccessful\n";
+			
+			if (ReadFile(studentfile, libdata)) cout << "\nread successful\n";
+			else cout << "\nread unsuccessful\n";
 			break;
 
 
 		case 2:
-			cout << "enter student id to delete!\n";
+			cout << "Enter student ID to delete: ";
 			cin >> temp;
-			if (strlen(temp.c_str()) > 7) {
-				do {
-					cout << "student letter consist of 7 digits!\n"; // to make sure that the id inserted is more than 7 digits
-					cin >> temp;
-				} while (strlen(temp.c_str()) > 7);
+			cin.ignore();
+			// Validate: must be exactly 7 characters
+			while (temp.length() != 7) {
+				cout << "Student ID must be exactly 7 characters. Try again: ";
+				cin >> temp;
+				cin.ignore();
 			}
+			// Convert string to char array
 			strcpy(idfind, temp.c_str());
-			if (DeleteRecord(libdata, idfind)) cout << "delete successful!\n";
-			else cout << "no ID in database match with ID entered,delete unsuccessful!\n";
+
+			// Call DeleteRecord function
+			if (DeleteRecord(libdata, idfind)) {
+				cout << "\nDelete successful!\n";
+			}
+			else {
+				cout << "Delete unsuccessful!\n";
+			}
 			break;
+
 
 
 		case 3:
@@ -161,7 +172,8 @@ bool ReadFile(string filename, List* list) {
 	LibStudent studentinfo;
 	bool exist;
 	size_t pos;
-	int linepos = 0;
+	int linepos = 0, count = 0;
+	
 
 
 	infile.open(filename);
@@ -169,32 +181,24 @@ bool ReadFile(string filename, List* list) {
 		
 	while (getline(infile, tempostring)) {
 		if (tempostring.find("Student Id") != string::npos) { // to find the identifiers and taking the value after identifier.
-			pos = tempostring.find('='); 
-			if (strlen(tempostring.substr(pos + 2).c_str()) < 10) { // pos + 2 as the value always starts two position after =, < 10 to prevent overflowing when strpying into studentinfo.id
+			pos = tempostring.find('=');  // pos + 2 as the value always starts two position after =, < 10 to prevent overflowing when strpying into studentinfo.id
 				strcpy(studentinfo.id, tempostring.substr(pos + 2).c_str());
 				linepos++;
-			}
 		}
 		else if (tempostring.find("Name") != string::npos) {
 			pos = tempostring.find('=');
-			if (strlen(tempostring.substr(pos + 2).c_str()) < 30) {
 				strcpy(studentinfo.name, tempostring.substr(pos + 2).c_str());
 				linepos++;
-			}
 		}
 		else if (tempostring.find("course") != string::npos) {
 			pos = tempostring.find('=');
-			if (strlen(tempostring.substr(pos + 2).c_str()) < 3) {
 				strcpy(studentinfo.course, tempostring.substr(pos + 2).c_str());
 				linepos++;
-			}
 		}
 		else if (tempostring.find("Phone Number") != string::npos) {
 			pos = tempostring.find('=');
-			if (strlen(tempostring.substr(pos + 2).c_str()) < 10) {
 				strcpy(studentinfo.phone_no, tempostring.substr(pos + 2).c_str());
 				linepos++;
-			}
 		}
 		if (linepos!= 0&& linepos % 4 == 0) { // to make sure all neccesary values are stored before inserting into the list
 			exist = false;
@@ -205,29 +209,78 @@ bool ReadFile(string filename, List* list) {
 						break;
 					}
 					
+					
 				}
+				if (strcmp(studentinfo.course, "CS") != 0 && strcmp(studentinfo.course, "IA") != 0 && strcmp(studentinfo.course, "CN") != 0 && strcmp(studentinfo.course, "CT") != 0 && strcmp(studentinfo.course, "IB") != 0) {
+					cout << studentinfo.course << " is not a valid courseID for student: " << studentinfo.id << " IGNORING RECORD...\n";
+					studentinfo = LibStudent();
+					linepos = 0;
+					continue;
+				}
+				
 				if (!exist) {
 					list->insert(studentinfo);
+					++count;
 				}
 			
 				linepos = 0;
 		}
 	}
+	cout << count << " records have been recorded";
 	return true;
 }
-bool DeleteRecord(List* list, char* id) {
-	if (list->empty()) return false;
-	for (int i = 1; i <= list->count; i++) {
-		if (strcmp(list->find(i)->item.id,id)==0) {
-			if (list->remove(i)) return true;
-
-		}
-
-	}
-	return false;
+bool DeleteRecord(List* list, char* keyword) {
 	
-}
+	int confirm;
+	//check exist list
+	if (list->empty()) {
+		cout << "No record found!\n";
+		return false;
+	}
+	LibStudent student;
+	for (int i = 1; i <= list->size(); i++) {
+		list->get(i, student);
 
+		if (strcmp(student.id, keyword) == 0) {
+			cout << "\nRecord found:";
+			student.print(cout); //print the student details
+
+			//confirmation from user to delete
+			while (true) { //validation checking
+				cout << "\nConfirm to delete?(1-Yes, 0-No): ";
+				do {
+					cin >> confirm;
+				} while (!inputValidation(0,1,confirm));
+				
+				if (confirm == 1) {
+					list->remove(i); //Remove from the list
+					
+					ofstream outFile("student.txt");
+					for (int j = 1; j <= list->size(); j++) { //rewrite the file to reflect to the changes made in the list
+						list->get(j, student);
+						outFile << "Student Id = " << student.id << endl;
+						outFile << "Name = " << student.name << endl;
+						outFile << "course = " << student.course << endl;
+						outFile << "Phone Number = " << student.phone_no << endl;
+						outFile << endl << endl;
+
+					}
+					outFile.close();
+					return true;
+				}
+				else if (confirm == 0) {
+					return false;
+				}
+				else
+					cout << "\nInvalid input! Please enter 1 and 0." << endl;
+			}
+		}
+		
+	}
+	cout << "Not matching record found!\n";
+	
+	return false;
+}
 bool SearchStudent(List* list, char* id, LibStudent &studentinfo) {
 	if (list->empty()) return false;
 	for (int i = 1; i <= list->count; i++) {
@@ -242,18 +295,21 @@ bool SearchStudent(List* list, char* id, LibStudent &studentinfo) {
 }
 bool InsertBook(string filename, List* list, Date &currentdate) {
 	if (list->empty()) return false;
-	LibBook tempobooks =  LibBook();
+	
 	ifstream infile;
 	infile.open(filename);
 	if (!infile.is_open()) return false;
 	char tempostring[100];
 	char* token;
-	bool bookexist = false;
+	bool bookexist;
+	int count = 0;
 
 	
 	while (infile >> tempostring) {//id
+		
 		if (tempostring[0] == '\0') continue; // if tempostring is a empty skips everything and continue the loop
 		for (int i = 1; i <= list->count; i++) {
+			LibBook tempobooks = LibBook();
 			if (strcmp(list->find(i)->item.id, tempostring) == 0) {
 				infile >> tempostring;
 				token=strtok(tempostring, "/"); // strtok to replace '/' in tempostring to null and token is pointing to the first letter of tempostring
@@ -275,9 +331,32 @@ bool InsertBook(string filename, List* list, Date &currentdate) {
 				tempobooks.due.day = atoi(strtok(tempostring, "/"));
 				tempobooks.due.month = atoi(strtok(NULL, "/"));
 				tempobooks.due.year = atoi(strtok(NULL, "/"));
-				tempobooks.fine = (compareDate(currentdate, tempobooks.due) * 0.5); // a function to compare two dates and return their differences * 0.5 as one day fine is rm0.50
+				bookexist = false;
+				if (compareDate(tempobooks.due, tempobooks.borrow)<0){ // to validate the date by comparing borrow date and due date
+					cout << "DUE DATE CANT BE EARLIER THAN BORROW DATE (" << tempobooks.callNum << ")IGNORING RECORD...";
+					cout << "\nborrow date: ";
+					tempobooks.borrow.print(cout);
+					cout << endl;
+					cout << "due date: ";
+					tempobooks.due.print(cout);
+					cout << endl;
+					break;
+					
+				}
+				if (tempobooks.yearPublished > currentdate.year) {
+					cout << "YEAR PUBLISHED CANT BE AFTER CURRENT YEAR (" << tempobooks.callNum << ")IGNORING RECORD...";
+					cout << "\nborrow year: ";
+					cout << tempobooks.borrow.year << endl;
+					cout << "published year: ";
+					cout << tempobooks.yearPublished << endl;
+					cout << endl;
+					break;
+				}
+				if ((compareDate(currentdate, tempobooks.due) >= 0)) {
+					tempobooks.fine = (compareDate(currentdate, tempobooks.due) * 0.5);
+				}// a function to compare two dates and return their differences * 0.5 as one day fine is rm0.50
 				for (int j = 0; j < list->find(i)->item.totalbook; j++) {
-					if (strcmp(list->find(i)->item.book[j].callNum, tempobooks.callNum) == 0) {
+					if (strcmp(list->find(i)->item.book[j].callNum, tempobooks.callNum) == 0 && compareDate(list->find(i)->item.book[j].borrow,tempobooks.borrow)==0) {
 						cout << "Duplicate records found for book with callnum (" << tempobooks.callNum << ") IGNORING RECORD... \n"; // to check for duplicate records in a student booklist by checking call numbers.
 						tempobooks = LibBook();
 						bookexist = true;
@@ -285,36 +364,17 @@ bool InsertBook(string filename, List* list, Date &currentdate) {
 					}
 				}
 				if (!bookexist) {
-					for (int c = 0; tempobooks.author[c] != NULL; c++) {
-						list->find(i)->item.book[list->find(i)->item.totalbook].author[c] = new char[strlen(tempobooks.author[c])];
-						strcpy(list->find(i)->item.book[list->find(i)->item.totalbook].author[c], tempobooks.author[c]);
-					}
-					strcpy(list->find(i)->item.book[list->find(i)->item.totalbook].title,tempobooks.title);
-					strcpy(list->find(i)->item.book[list->find(i)->item.totalbook].publisher,tempobooks.publisher);
-					strcpy(list->find(i)->item.book[list->find(i)->item.totalbook].ISBN,tempobooks.ISBN);
-					list->find(i)->item.book[list->find(i)->item.totalbook].yearPublished=tempobooks.yearPublished;
-					strcpy(list->find(i)->item.book[list->find(i)->item.totalbook].callNum,tempobooks.callNum);
-					list->find(i)->item.book[list->find(i)->item.totalbook].borrow.day=tempobooks.borrow.day;
-					list->find(i)->item.book[list->find(i)->item.totalbook].borrow.month=tempobooks.borrow.month;
-					list->find(i)->item.book[list->find(i)->item.totalbook].borrow.year=tempobooks.borrow.year;
-					list->find(i)->item.book[list->find(i)->item.totalbook].due.day=tempobooks.due.day;
-					list->find(i)->item.book[list->find(i)->item.totalbook].due.month=tempobooks.due.month;
-					list->find(i)->item.book[list->find(i)->item.totalbook].due.year=tempobooks.due.year;
-					list->find(i)->item.book[list->find(i)->item.totalbook].fine=tempobooks.fine;
+					list->find(i)->item.book[list->find(i)->item.totalbook] = tempobooks;
 					++list->find(i)->item.totalbook;
 					list->find(i)->item.calculateTotalFine();
-					
-
+					++count;
 				}
-
-				
 			}
 		}
 	}
+	cout << count << " books inserted\n";
 	return true;
 }
-
-
 time_t convertDate(Date time) { // a time t function from the c_time library that converts time to a value that c_time understands.
 	struct tm tm_time;
 	tm_time.tm_year = time.year - 1900;
@@ -328,10 +388,10 @@ time_t convertDate(Date time) { // a time t function from the c_time library tha
 }
 
 
-int compareDate(Date currentdate, Date duedate) { // a function that uses the convert date function and comparing both converted time and returning their difference
-	time_t date1 = convertDate(currentdate);
-	time_t date2 = convertDate(duedate);
-	if (date1 <= date2) return 0;
+int compareDate(Date end, Date start) { // a function that uses the convert date function and comparing both converted time and returning their difference
+	time_t date1 = convertDate(end);
+	time_t date2 = convertDate(start);
+	
 	
 	double diff = difftime(date1, date2);
 	return diff /(60 * 60 * 24); // 
@@ -546,8 +606,11 @@ bool displayWarnedStudent(List*list, List* type1, List* type2,Date currentdate) 
 }
 
 
-int menu(){
+int menu() {
 	int userinput = 0;
+	cout << "====================================\n";
+	cout << "             MAIN MENU\n";
+	cout << "====================================\n";
 	cout << "1.Read File\n";
 	cout << "2.Delete Record\n";
 	cout << "3.Search Student\n";
@@ -557,11 +620,12 @@ int menu(){
 	cout << "7.Student with Same Book\n";
 	cout << "8.Display Warned Student\n";
 	cout << "9.Exit\n";
-	
+	cout << "====================================\n";
+
 	do {
-		cout << "CHOICE: ";
+		cout << "\nCHOICE: ";
 		cin >> noskipws >> userinput;
-	} while (!inputValidation(1,9,userinput));
+	} while (!inputValidation(1, 9, userinput));
 	return userinput;
 }
 
